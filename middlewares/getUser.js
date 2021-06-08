@@ -11,7 +11,7 @@ async function getUser(req, res, next){
         return res.status(500).json({ message: error.message })
     }
 
-    res.user = user
+    res.foundUser = user
     next()
 }
 

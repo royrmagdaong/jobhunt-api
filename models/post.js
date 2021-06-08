@@ -1,39 +1,31 @@
 const mongoose = require('mongoose')
 
-const userSchema = new mongoose.Schema({
-    role:{
+const postSchema = new mongoose.Schema({
+    userId:{
         type: String,
         required: true
     },
-    name:{
+    title: {
         type: String,
         required: true
     },
-    email:{
+    body: {
         type: String,
         required: true
     },
-    contact_num:{
-        type: String,
-        default: null
-    },
-    password:{
-        type: String,
-        required: true
-    },
-    created_at:{
+    createdAt: {
         type: Date,
         required: true,
-        default: Date.now
+        default: Date.now()
     },
-    updated_at:{
+    updatedAt: {
         type: Date,
         default: null
     },
-    deleted_at:{
+    deletedAt: {
         type: Date,
         default: null
     }
 })
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('Post', postSchema)

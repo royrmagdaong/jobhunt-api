@@ -16,10 +16,14 @@ db.once('open', () => console.log('Connected to Database'))
 
 // import routes
 const UserRoutes = require('./routes/Users')
-const SubscriberRoutes = require('./routes/Subscribers')
+const PostRoutes = require('./routes/Posts')
 
 // Routes
-app.use('/users', UserRoutes)
-app.use('/subscribers', SubscriberRoutes)
+app.use('/user', UserRoutes)
+app.use('/post', PostRoutes)
+
+
+
+
 
 app.listen(process.env.PORT, () => console.log(`Server Started at port ${process.env.PORT}`))

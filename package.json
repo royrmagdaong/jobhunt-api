@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon server.js"
+    "devStart": "nodemon server.js",
+    "seed": "node ./seeder/seeder.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,7 +14,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.11"
+    "mongoose": "^5.12.11",
+    "mongoose-seed": "^0.6.0"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
