@@ -1,42 +1,51 @@
-const Post = require('../models/post')
+const JobPost = require('../models/jobPost')
 
 module.exports = {
-    getAllPosts: (req, res) => {
-        return res.send('get all posts')
-    },
-    getPost: (req, res) => {
-        return res.send('get single post')
-    },
-    getUserPosts: (req, res) => {
-        return res.send('get user posts')
-    },
-    getUserPost: (req, res) => {
-        return res.send('get user post')
-    },
-    createPost: async (req, res) => {
-        // return res.send('create post')
+    getAllPosts: async (req, res) => {
         try {
-            const post = new Post({
-                userId: res.user.id,
-                title: req.body.title,
-                body: req.body.body
+            await JobPost.find({})
+            .populate('applicants', ['name', 'email', 'contact_num'])
+            .populate('author', ['name', 'email', 'contact_num'])
+            .exec((err, jobposts)=> {
+                if(err) return res.send(err)
+                return res.json({ response: true, data: jobposts})
             })
-    
-            await post.save( (err, newPost) => {
+        } catch (error) {
+            return res.status(500).json({ response: false, message: error.message })
+        }
+    },
+    createJobPost: async (req, res) => {
+        let jobPost
+        try {
+            jobPost = new JobPost({
+                author: res.user.id,
+                jobTitle: req.body.jobTitle,
+                jobDescription: req.body.jobDescription,
+                expectedSalary: req.body.expectedSalary
+            })
+            await jobPost.save((err, newJobPost) => {
                 if(err){
-                   return res.status(500).json({err:err, message:err.message})
+                    res.status(500).json({ response: false, message: err.message})
                 }else{
-                   return res.status(201).json(newPost)
+                    res.status(201).json({response: true, jobPost: newJobPost })
                 }
             })
         } catch (error) {
-            return res.status(500).json({error: error})
+            return res.status(500).json({ message: error.message })
         }
     },
-    updatePost: (req, res) => {
-        return res.send('update post')
-    },
-    deletePost: (req, res) => {
-        return res.send('delete post')
+    apply: async (req, res) => {
+        try {
+            await JobPost.findOne({_id: '60bfa40d412ad7085079b11a'}).exec((err, jobpost)=>{
+                if(err) return res.send(err)
+                jobpost.applicants.push(res.user.id)
+                jobpost.save(err=>{
+                    if(err) return res.send(err)
+                    return res.send({jobpost})
+                }) 
+            })
+        } catch (error) {
+            return res.status(500).json({ message: error.message })
+        }
     }
 }

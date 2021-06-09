@@ -16,11 +16,11 @@ db.once('open', () => console.log('Connected to Database'))
 
 // import routes
 const UserRoutes = require('./routes/Users')
-const PostRoutes = require('./routes/Posts')
+const PostRoutes = require('./routes/JobPosts')
 
 // Routes
 app.use('/user', UserRoutes)
-app.use('/post', PostRoutes)
+app.use('/job-post', PostRoutes)
 
 
 
