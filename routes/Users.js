@@ -13,6 +13,13 @@ router.get('/',
     UserController.getAllUser
 )
 
+// get all company users
+router.get('/company-users', 
+    authenticate, 
+    authRole(['company-admin']), 
+    UserController.getAllCompanyUser
+)
+
 // sign in user
 router.post('/signin', 
     UserController.signInUser

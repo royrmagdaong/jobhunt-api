@@ -14,6 +14,18 @@ module.exports = {
             res.status(500).json({ message: error.message })
         }
     },
+    getAllCompanyUser: async (req, res) => {
+        try {
+            await Company.findOne({userId: res.user.id})
+            .populate('companyUsers')
+            .exec((err, company)=>{
+                if(err) return res.status(500).json({ message: err.message })
+                return res.send({company})
+            })
+        } catch (error) {
+            return res.status(500).json({ message: error.message })
+        }
+    },
     createUser: async (req, res) => {
         try {
             let user
@@ -123,44 +135,34 @@ module.exports = {
     },
     createCompanyUser: async (req, res) => {
         try {
-            let user
             await bcrypt.hash(req.body.password, saltRounds, async (err, hashPassword) => {
-                if(err){
-                    res.status(500).json({response: false, message:err.message })
-                }else{
-                    user = new User({
-                        role: "company-user",
-                        name: req.body.name,
-                        email: req.body.email,
-                        password: hashPassword
-                    })
-                    await user.save( async (err, newUser) => {
-                        if(err){
-                            res.status(500).json({response: false, message:err.message})
-                        }else{
-                            const company = new Company({
-                                userId: newUser._id,
-                                companyName: newUser.name,
-                                companyEmail: newUser.email
+                if(err) return res.status(500).json({response: false, message:err.message })
+                const user = new User({
+                    role: "company-user",
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: hashPassword
+                })
+                await user.save( async (err, newUser) => {
+                    if(err) return res.status(500).json({response: false, message:err.message})
+                    await Company.findOne({userId: res.user.id}, async (err, company)=>{
+                        if(err) return res.status(500).json({response: false, message:err.message})
+                        if(company){
+                            company.companyUsers.push(newUser._id)
+                            await company.save((err, updatedCompany) => {
+                                if(err) return res.status(500).json({response: false, message:err.message})
+                                return res.status(201).json({
+                                    response: true, 
+                                    user: { name: req.body.name, email: req.body.email },
+                                    updatedCompany
+                                })
                             })
-                            await company.save((err, newCompany) => {
-                                if(err){
-                                    res.status(500).json({response: false, message:err.message})
-                                }else{
-                                    res.status(201).json({
-                                        response: true, 
-                                        user: { name: req.body.name, email: req.body.email }
-                                    })
-                                }
-                            })
-                            
-                        }
+                        }else{ return res.status(500).json({response: false, message: 'the user has no company found'}) }
                     })
-                    
-                }
+                })
             })
         } catch (error) {
-            res.status(500).json({response: false, message: error.message })
+            return res.status(500).json({response: false, message: error.message })
         }
     },
     signInUser: async (req, res) => {
