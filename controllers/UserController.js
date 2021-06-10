@@ -1,4 +1,6 @@
 const User = require('../models/user')
+const Applicant = require('../models/applicant')
+const Company = require('../models/company')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const saltRounds = 10;
@@ -59,11 +61,22 @@ module.exports = {
                             email: req.body.email,
                             password: hashPassword
                         })
-                        await user.save((err, newUser) => {
+                        await user.save( async (err, newUser) => {
                             if(err){
                                 res.status(500).json({response: false, message:err.message})
-                            }else{
-                                res.status(201).json({response: true, user: { name: req.body.name, email: req.body.email }})
+                            }else{ 
+                                const applicant = new Applicant({
+                                    userId: newUser._id
+                                })
+                                await applicant.save((err, newApplicant)=> {
+                                    if(err){ res.status(500).json({ response: false, message:err.message }) }
+                                    else{ 
+                                        res.status(201).json({
+                                            response: true, 
+                                            user: { name: req.body.name, email: req.body.email },
+                                        })
+                                    }
+                                })
                             }
                         })
                         
@@ -85,16 +98,31 @@ module.exports = {
                         res.status(500).json({response: false, message:err.message })
                     }else{
                         user = new User({
-                            role: "company",
+                            role: "company-admin",
                             name: req.body.name,
                             email: req.body.email,
                             password: hashPassword
                         })
-                        await user.save((err, newUser) => {
+                        await user.save( async (err, newUser) => {
                             if(err){
                                 res.status(500).json({response: false, message:err.message})
                             }else{
-                                res.status(201).json({response: true, user: { name: req.body.name, email: req.body.email }})
+                                const company = new Company({
+                                    userId: newUser._id,
+                                    companyName: newUser.name,
+                                    companyEmail: newUser.email
+                                })
+                                await company.save((err, newCompany) => {
+                                    if(err){
+                                        res.status(500).json({response: false, message:err.message})
+                                    }else{
+                                        res.status(201).json({
+                                            response: true, 
+                                            user: { name: req.body.name, email: req.body.email }
+                                        })
+                                    }
+                                })
+                                
                             }
                         })
                         

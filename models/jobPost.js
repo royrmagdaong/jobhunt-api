@@ -3,6 +3,7 @@ const Schema = mongoose.Schema
 
 const jobPostSchema = Schema({
     author: { type: Schema.Types.ObjectId, ref: 'User' },
+    company: { type: Schema.Types.ObjectId, ref: 'Company' },
     applicants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     jobTitle: {
         type: String,
@@ -14,6 +15,10 @@ const jobPostSchema = Schema({
     },
     expectedSalary: {
         type: String,
+        default: null
+    },
+    applied_at: {
+        type: Date,
         default: null
     },
     created_at: {

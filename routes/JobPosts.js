@@ -12,7 +12,7 @@ router.get('/',
 // create job post
 router.post('/create', 
     authenticate, 
-    authRole(['company']),
+    authRole(['company-admin', 'company-user']),
     PostController.createJobPost
 )
 

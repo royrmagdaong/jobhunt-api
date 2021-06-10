@@ -9,7 +9,7 @@ const authRole = require('../middlewares/authRole')
 // get all users
 router.get('/', 
     authenticate, 
-    authRole(['super-admin', 'admin']), 
+    authRole(['admin']), 
     UserController.getAllUser
 )
 
@@ -22,7 +22,7 @@ router.post('/signin',
 router.post('/create', 
     authenticate, 
     checkEmail,
-    authRole(['super-admin', 'admin']),
+    authRole(['admin']),
     UserController.createUser
 )
 
@@ -48,7 +48,7 @@ router.patch('/update/:id',
 // deactivate user
 router.post('/delete/:id', 
     authenticate, 
-    authRole(['super-admin', 'admin']),
+    authRole(['admin']),
     getUser,
     UserController.deleteUser
 )
@@ -56,14 +56,14 @@ router.post('/delete/:id',
 // get deleted users
 router.get('/deleted', 
     authenticate, 
-    authRole(['super-admin', 'admin']),
+    authRole(['admin']),
     UserController.getDeletedUsers
 )
 
 // reactivate user
 router.post('/reactivate/:id', 
     authenticate, 
-    authRole(['super-admin', 'admin']), 
+    authRole(['admin']), 
     UserController.reactivateUser
 )
 

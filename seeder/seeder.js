@@ -12,21 +12,21 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true }, async fun
                 'model': 'User',
                 'documents': [
                     {
-                        role: "super-admin",
-                        name: "super admin",
-                        email: "superadmin@gmail.com",
-                        password: hashPassword
-                    },
-                    {
                         role: "admin",
                         name: "admin",
                         email: "admin@gmail.com",
                         password: hashPassword
                     },
                     {
-                        role: "company",
-                        name: "company",
-                        email: "company@gmail.com",
+                        role: "company-admin",
+                        name: "company admin",
+                        email: "companyadmin@gmail.com",
+                        password: hashPassword
+                    },
+                    {
+                        role: "company-user",
+                        name: "company user",
+                        email: "companyuser@gmail.com",
                         password: hashPassword
                     },
                     {
@@ -67,9 +67,9 @@ var data = [
     {
         'model': 'Role',
         'documents': [
-            { roleId: 0, name: "super-admin" },
-            { roleId: 1, name: "admin" },
-            { roleId: 2, name: "company" },
+            { roleId: 0, name: "admin" },
+            { roleId: 1, name: "company-admin" },
+            { roleId: 2, name: "company-user" },
             { roleId: 3, name: "applicant" },
             { roleId: 4, name: "guest" }
         ]
