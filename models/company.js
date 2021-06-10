@@ -5,6 +5,7 @@ const AutoIncrement2 = require('mongoose-sequence')(mongoose);
 
 const companySchema = Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    companyUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     companyNumber: { type: Number },
     companyName: { type: String, required: true },
     companyEmail: { type: String, required: true },
