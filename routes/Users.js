@@ -38,6 +38,14 @@ router.post('/create/company',
     UserController.createCompany
 )
 
+// create company user
+router.post('/create/company-user',
+    authenticate,
+    authRole(['company-admin']),
+    checkEmail,
+    UserController.createCompanyUser
+)
+
 // update user info
 router.patch('/update/:id', 
     authenticate, 

@@ -5,6 +5,7 @@ const jobPostSchema = Schema({
     author: { type: Schema.Types.ObjectId, ref: 'User' },
     company: { type: Schema.Types.ObjectId, ref: 'Company' },
     applicants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    hiredApplicants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     jobTitle: {
         type: String,
         required: true
@@ -17,14 +18,14 @@ const jobPostSchema = Schema({
         type: String,
         default: null
     },
-    applied_at: {
-        type: Date,
-        default: null
-    },
     created_at: {
         type: Date,
         required: true,
         default: Date.now()
+    },
+    closed_at: {
+        type: Date,
+        default: null
     },
     updated_at: {
         type: Date,

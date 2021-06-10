@@ -17,30 +17,26 @@ module.exports = {
     createUser: async (req, res) => {
         try {
             let user
-            if(res.emailAlreadyExist){
-                res.status(200).json({response: false, message: "email already exists."})
-            }else{
-                await bcrypt.hash(req.body.password, saltRounds, async (err, hashPassword) => {
-                    if(err){
-                        res.status(500).json({ response: false, message:err.message })
-                    }else{
-                        user = new User({
-                            role: req.body.role,
-                            name: req.body.name,
-                            email: req.body.email,
-                            password: hashPassword
-                        })
-                        await user.save((err, newUser) => {
-                            if(err){
-                                res.status(500).json({ response: false, message:err.message})
-                            }else{
-                                res.status(201).json({response: true, user: { name: req.body.name, email: req.body.email }})
-                            }
-                        })
-                        
-                    }
-                })
-            }
+            await bcrypt.hash(req.body.password, saltRounds, async (err, hashPassword) => {
+                if(err){
+                    res.status(500).json({ response: false, message:err.message })
+                }else{
+                    user = new User({
+                        role: req.body.role,
+                        name: req.body.name,
+                        email: req.body.email,
+                        password: hashPassword
+                    })
+                    await user.save((err, newUser) => {
+                        if(err){
+                            res.status(500).json({ response: false, message:err.message})
+                        }else{
+                            res.status(201).json({response: true, user: { name: req.body.name, email: req.body.email }})
+                        }
+                    })
+                    
+                }
+            })
         } catch (error) {
             res.status(500).json({response: false, message: error.message })
         }
@@ -48,41 +44,37 @@ module.exports = {
     createApplicant: async (req, res) => {
         try {
             let user
-            if(res.emailAlreadyExist){
-                res.status(200).json({response: false, message: "email already exists."})
-            }else{
-                await bcrypt.hash(req.body.password, saltRounds, async (err, hashPassword) => {
-                    if(err){
-                        res.status(500).json({ response: false, message:err.message })
-                    }else{
-                        user = new User({
-                            role: "applicant",
-                            name: req.body.name,
-                            email: req.body.email,
-                            password: hashPassword
-                        })
-                        await user.save( async (err, newUser) => {
-                            if(err){
-                                res.status(500).json({response: false, message:err.message})
-                            }else{ 
-                                const applicant = new Applicant({
-                                    userId: newUser._id
-                                })
-                                await applicant.save((err, newApplicant)=> {
-                                    if(err){ res.status(500).json({ response: false, message:err.message }) }
-                                    else{ 
-                                        res.status(201).json({
-                                            response: true, 
-                                            user: { name: req.body.name, email: req.body.email },
-                                        })
-                                    }
-                                })
-                            }
-                        })
-                        
-                    }
-                })
-            }
+            await bcrypt.hash(req.body.password, saltRounds, async (err, hashPassword) => {
+                if(err){
+                    res.status(500).json({ response: false, message:err.message })
+                }else{
+                    user = new User({
+                        role: "applicant",
+                        name: req.body.name,
+                        email: req.body.email,
+                        password: hashPassword
+                    })
+                    await user.save( async (err, newUser) => {
+                        if(err){
+                            res.status(500).json({response: false, message:err.message})
+                        }else{ 
+                            const applicant = new Applicant({
+                                userId: newUser._id
+                            })
+                            await applicant.save((err, newApplicant)=> {
+                                if(err){ res.status(500).json({ response: false, message:err.message }) }
+                                else{ 
+                                    res.status(201).json({
+                                        response: true, 
+                                        user: { name: req.body.name, email: req.body.email },
+                                    })
+                                }
+                            })
+                        }
+                    })
+                    
+                }
+            })
         } catch (error) {
             res.status(500).json({response: false, message: error.message })
         }
@@ -90,45 +82,83 @@ module.exports = {
     createCompany: async (req, res) => {
         try {
             let user
-            if(res.emailAlreadyExist){
-                res.status(200).json({response: false, message: "email already exists."})
-            }else{
-                await bcrypt.hash(req.body.password, saltRounds, async (err, hashPassword) => {
-                    if(err){
-                        res.status(500).json({response: false, message:err.message })
-                    }else{
-                        user = new User({
-                            role: "company-admin",
-                            name: req.body.name,
-                            email: req.body.email,
-                            password: hashPassword
-                        })
-                        await user.save( async (err, newUser) => {
-                            if(err){
-                                res.status(500).json({response: false, message:err.message})
-                            }else{
-                                const company = new Company({
-                                    userId: newUser._id,
-                                    companyName: newUser.name,
-                                    companyEmail: newUser.email
-                                })
-                                await company.save((err, newCompany) => {
-                                    if(err){
-                                        res.status(500).json({response: false, message:err.message})
-                                    }else{
-                                        res.status(201).json({
-                                            response: true, 
-                                            user: { name: req.body.name, email: req.body.email }
-                                        })
-                                    }
-                                })
-                                
-                            }
-                        })
-                        
-                    }
-                })
-            }
+            await bcrypt.hash(req.body.password, saltRounds, async (err, hashPassword) => {
+                if(err){
+                    res.status(500).json({response: false, message:err.message })
+                }else{
+                    user = new User({
+                        role: "company-admin",
+                        name: req.body.name,
+                        email: req.body.email,
+                        password: hashPassword
+                    })
+                    await user.save( async (err, newUser) => {
+                        if(err){
+                            res.status(500).json({response: false, message:err.message})
+                        }else{
+                            const company = new Company({
+                                userId: newUser._id,
+                                companyName: newUser.name,
+                                companyEmail: newUser.email
+                            })
+                            await company.save((err, newCompany) => {
+                                if(err){
+                                    res.status(500).json({response: false, message:err.message})
+                                }else{
+                                    res.status(201).json({
+                                        response: true, 
+                                        user: { name: req.body.name, email: req.body.email }
+                                    })
+                                }
+                            })
+                            
+                        }
+                    })
+                    
+                }
+            })
+        } catch (error) {
+            res.status(500).json({response: false, message: error.message })
+        }
+    },
+    createCompanyUser: async (req, res) => {
+        try {
+            let user
+            await bcrypt.hash(req.body.password, saltRounds, async (err, hashPassword) => {
+                if(err){
+                    res.status(500).json({response: false, message:err.message })
+                }else{
+                    user = new User({
+                        role: "company-user",
+                        name: req.body.name,
+                        email: req.body.email,
+                        password: hashPassword
+                    })
+                    await user.save( async (err, newUser) => {
+                        if(err){
+                            res.status(500).json({response: false, message:err.message})
+                        }else{
+                            const company = new Company({
+                                userId: newUser._id,
+                                companyName: newUser.name,
+                                companyEmail: newUser.email
+                            })
+                            await company.save((err, newCompany) => {
+                                if(err){
+                                    res.status(500).json({response: false, message:err.message})
+                                }else{
+                                    res.status(201).json({
+                                        response: true, 
+                                        user: { name: req.body.name, email: req.body.email }
+                                    })
+                                }
+                            })
+                            
+                        }
+                    })
+                    
+                }
+            })
         } catch (error) {
             res.status(500).json({response: false, message: error.message })
         }
