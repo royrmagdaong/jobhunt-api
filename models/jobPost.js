@@ -6,6 +6,7 @@ const jobPostSchema = Schema({
     company: { type: Schema.Types.ObjectId, ref: 'Company' },
     applicants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     hiredApplicants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    numberOfApplicantNeeded: { type: Number, required: true },
     jobTitle: {
         type: String,
         required: true
