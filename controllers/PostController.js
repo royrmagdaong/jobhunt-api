@@ -7,7 +7,8 @@ module.exports = {
             let limit = 10
             let query = {}
             await JobPost.find(query)
-            .sort({created_at: 'desc'})
+            // .sort([['created_at',1],['expectedSalary',-1]])
+            .sort([['created_at',1]])
             .skip(page * limit)
             .limit(limit)
             .populate('applicants', ['name', 'email', 'contact_num'])

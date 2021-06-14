@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const moment = require('moment')
 const Schema = mongoose.Schema
 
 const jobPostSchema = Schema({
@@ -22,7 +23,7 @@ const jobPostSchema = Schema({
     created_at: {
         type: Date,
         required: true,
-        default: Date.now()
+        default: moment(new Date()).format('L')
     },
     closed_at: {
         type: Date,

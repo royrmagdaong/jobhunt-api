@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const moment = require('moment')
 
 const userSchema = new mongoose.Schema({
     role:{
@@ -17,10 +18,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    verificationCode: { type: String },
+    is_verified: { type: Boolean, default: false },
     created_at:{
         type: Date,
         required: true,
-        default: Date.now
+        default: moment(new Date()).format('L')
     },
     updated_at:{
         type: Date,
