@@ -15,31 +15,36 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true }, async fun
                         role: "admin",
                         name: "admin",
                         email: "admin@gmail.com",
-                        password: hashPassword
+                        password: hashPassword,
+                        verificationCode: Math.floor(100000 + Math.random() * 900000)
                     },
                     {
                         role: "company-admin",
                         name: "company admin",
                         email: "companyadmin@gmail.com",
-                        password: hashPassword
+                        password: hashPassword,
+                        verificationCode: Math.floor(100000 + Math.random() * 900000)
                     },
                     {
                         role: "company-user",
                         name: "company user",
                         email: "companyuser@gmail.com",
-                        password: hashPassword
+                        password: hashPassword,
+                        verificationCode: Math.floor(100000 + Math.random() * 900000)
                     },
                     {
                         role: "applicant",
                         name: "applicant",
                         email: "applicant@gmail.com",
-                        password: hashPassword
+                        password: hashPassword,
+                        verificationCode: Math.floor(100000 + Math.random() * 900000)
                     },
                     {
                         role: "guest",
                         name: "guest",
                         email: "guest@gmail.com",
-                        password: hashPassword
+                        password: hashPassword,
+                        verificationCode: Math.floor(100000 + Math.random() * 900000)
                     },
                 ]
             }
@@ -48,12 +53,14 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true }, async fun
 
             await seeder.loadModels([
                 './models/role',
-                './models/user'
+                './models/user',
+                './models/status'
             ])
         
             await seeder.clearModels([
                 'Role', 
-                'User'
+                'User',
+                'Status'
             ],function(){})
         
             await seeder.populateModels(data, () => {
@@ -73,5 +80,13 @@ var data = [
             { roleId: 3, name: "applicant" },
             { roleId: 4, name: "guest" }
         ]
-    }
+    },
+    {
+        'model': 'Status',
+        'documents': [
+            { statusId: 0, name: "close" },
+            { statusId: 1, name: "open" }
+        ]
+    },
+
 ];
