@@ -1,21 +1,12 @@
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const roleSchema = new mongoose.Schema({
-    roleId: {
-        type: Number,
-        unique: true,
-        reqired: true
-    },
-    name: {
-        type: String,
-        unique: true,
-        reqired: true
-    },
-    created_at: {
-        type: Date,
-        requried: true,
-        default: Date.now()
-    }
+const roleSchema = Schema({
+    ADMIN: {type: String, required: true, default: 'admin'},
+    COMPANY_ADMIN: {type: String, required: true, default: 'company-admin'},
+    COMPANY_USER: {type: String, required: true, default: 'company-user'},
+    APPLICANT: {type: String, required: true, default: 'applicant'},
+    GUEST: {type: String, required: true, default: 'guest'}
 })
 
 module.exports = mongoose.model('Role', roleSchema)

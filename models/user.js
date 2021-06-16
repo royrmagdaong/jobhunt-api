@@ -1,11 +1,9 @@
 const mongoose = require('mongoose')
 const moment = require('moment')
+const Schema = mongoose.Schema
 
-const userSchema = new mongoose.Schema({
-    role:{
-        type: String,
-        required: true
-    },
+const userSchema = Schema({
+    role: { type: String, required: true },
     name:{
         type: String,
         required: true
@@ -18,7 +16,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    verificationCode: { type: String, default: true },
+    verificationCode: { type: String, required: true },
     is_verified: { type: Boolean, default: false },
     created_at:{
         type: Date,
