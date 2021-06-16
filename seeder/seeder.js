@@ -2,6 +2,9 @@ require('dotenv').config()
 const seeder = require('mongoose-seed');
 const bcrypt = require('bcrypt')
 const Role = require('../models/role');
+const generateCode = require('../middlewares/generateCode')
+const Applicant = require('../models/applicant')
+const Company = require('../models/company')
 
 let password = 'password'
 
@@ -20,49 +23,64 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true }, async fun
                             name: "admin",
                             email: "admin@gmail.com",
                             password: hashPassword,
-                            verificationCode: Math.floor(100000 + Math.random() * 900000)
+                            verificationCode: generateCode(),
+                            is_verified: true
                         },
                         {
                             role: roles.COMPANY_ADMIN,
                             name: "company admin",
                             email: "companyadmin@gmail.com",
                             password: hashPassword,
-                            verificationCode: Math.floor(100000 + Math.random() * 900000)
+                            verificationCode: generateCode(),
+                            is_verified: true
                         },
                         {
                             role: roles.COMPANY_USER,
                             name: "company user",
                             email: "companyuser@gmail.com",
                             password: hashPassword,
-                            verificationCode: Math.floor(100000 + Math.random() * 900000)
+                            verificationCode: generateCode(),
+                            is_verified: true
                         },
                         {
                             role: roles.APPLICANT,
                             name: "applicant",
                             email: "applicant@gmail.com",
                             password: hashPassword,
-                            verificationCode: Math.floor(100000 + Math.random() * 900000)
+                            verificationCode: generateCode(),
+                            is_verified: true
                         },
                         {
                             role: roles.GUEST,
                             name: "guest",
                             email: "guest@gmail.com",
                             password: hashPassword,
-                            verificationCode: Math.floor(100000 + Math.random() * 900000)
+                            verificationCode: generateCode(),
+                            is_verified: true
                         },
                     ]
                 }
     
                 data.push(Users)
-    
+                
+                // load models
                 await seeder.loadModels([
                     './models/user',
-                    './models/status'
+                    './models/status',
+                    './models/applicant',
+                    './models/company'
                 ])
+                
+                // reset counter
+                await Applicant.counterReset('applicantNumber', (err)=>{ if(err) console.log(err) })
+                await Company.counterReset('companyNumber', (err)=>{ if(err) console.log(err) })
             
+                // clear models
                 await seeder.clearModels([
                     'User',
-                    'Status'
+                    'Status',
+                    'Applicant',
+                    'Company'
                 ],function(){})
             
                 await seeder.populateModels(data, () => {

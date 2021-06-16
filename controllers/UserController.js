@@ -4,6 +4,7 @@ const Company = require('../models/company')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const saltRounds = 10;
+const generateCode = require('../middlewares/generateCode')
 
 module.exports = {
     getAllUser: async (req, res) => {
@@ -37,7 +38,8 @@ module.exports = {
                         role: req.body.role,
                         name: req.body.name,
                         email: req.body.email,
-                        password: hashPassword
+                        password: hashPassword,
+                        verificationCode: generateCode()
                     })
                     await user.save((err, newUser) => {
                         if(err){
@@ -61,10 +63,11 @@ module.exports = {
                     res.status(500).json({ response: false, message:err.message })
                 }else{
                     user = new User({
-                        role: "applicant",
+                        role: res.ROLES.APPLICANT,
                         name: req.body.name,
                         email: req.body.email,
-                        password: hashPassword
+                        password: hashPassword,
+                        verificationCode: generateCode()
                     })
                     await user.save( async (err, newUser) => {
                         if(err){
@@ -99,10 +102,11 @@ module.exports = {
                     res.status(500).json({response: false, message:err.message })
                 }else{
                     user = new User({
-                        role: "company-admin",
+                        role: res.ROLES.COMPANY_ADMIN,
                         name: req.body.name,
                         email: req.body.email,
-                        password: hashPassword
+                        password: hashPassword,
+                        verificationCode: generateCode()
                     })
                     await user.save( async (err, newUser) => {
                         if(err){
@@ -135,19 +139,20 @@ module.exports = {
     },
     createCompanyUser: async (req, res) => {
         try {
-            await bcrypt.hash(req.body.password, saltRounds, async (err, hashPassword) => {
-                if(err) return res.status(500).json({response: false, message:err.message })
-                const user = new User({
-                    role: "company-user",
-                    name: req.body.name,
-                    email: req.body.email,
-                    password: hashPassword
-                })
-                await user.save( async (err, newUser) => {
-                    if(err) return res.status(500).json({response: false, message:err.message})
-                    await Company.findOne({userId: res.user.id}, async (err, company)=>{
-                        if(err) return res.status(500).json({response: false, message:err.message})
-                        if(company){
+            await Company.findOne({userId: res.user.id}, async (err, company)=>{
+                if(err) return res.status(500).json({response: false, message:err.message})
+                if(company){
+                    await bcrypt.hash(req.body.password, saltRounds, async (err, hashPassword) => {
+                        if(err) return res.status(500).json({response: false, message:err.message })
+                        const user = new User({
+                            role: res.ROLES.COMPANY_USER,
+                            name: req.body.name,
+                            email: req.body.email,
+                            password: hashPassword,
+                            verificationCode: generateCode()
+                        })
+                        await user.save( async (err, newUser) => {
+                            if(err) return res.status(500).json({response: false, message:err.message})
                             company.companyUsers.push(newUser._id)
                             await company.save((err, updatedCompany) => {
                                 if(err) return res.status(500).json({response: false, message:err.message})
@@ -157,9 +162,9 @@ module.exports = {
                                     updatedCompany
                                 })
                             })
-                        }else{ return res.status(500).json({response: false, message: 'the user has no company found'}) }
+                        })
                     })
-                })
+                }else{ return res.status(500).json({response: false, message: 'the user has no company found'}) }
             })
         } catch (error) {
             return res.status(500).json({response: false, message: error.message })

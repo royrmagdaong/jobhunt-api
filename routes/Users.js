@@ -5,6 +5,7 @@ const getUser = require('../middlewares/getUser')
 const checkEmail = require('../middlewares/checkEmail')
 const authenticate = require('../middlewares/authenticate')
 const authRole = require('../middlewares/authRole')
+const fetchRoles = require('../middlewares/fetchRoles')
 
 // get all users
 router.get('/', 
@@ -36,12 +37,14 @@ router.post('/create',
 // create applicant
 router.post('/create/applicant',
     checkEmail,
+    fetchRoles,
     UserController.createApplicant
 )
 
 // create company
 router.post('/create/company',
     checkEmail,
+    fetchRoles,
     UserController.createCompany
 )
 
@@ -50,6 +53,7 @@ router.post('/create/company-user',
     authenticate,
     authRole(['company-admin']),
     checkEmail,
+    fetchRoles,
     UserController.createCompanyUser
 )
 
