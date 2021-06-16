@@ -9,7 +9,7 @@ const companySchema = Schema({
     companyNumber: { type: Number },
     companyName: { type: String, required: true },
     companyEmail: { type: String, required: true },
-    contactNumber: { type: String },
+    contactNumber: { type: String, default: null },
     companyAddress: { type: String }
 })
 

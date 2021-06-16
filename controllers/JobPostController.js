@@ -1,5 +1,6 @@
 const JobPost = require('../models/job_post')
 const JobStatus = require('../models/job_status')
+const Company = require('../models/company')
 
 module.exports = {
     getAllPosts: async (req, res) => {
@@ -15,6 +16,7 @@ module.exports = {
             .populate('applicants', ['name', 'email', 'contact_num'])
             .populate('status', ['statusId', 'name'])
             .populate('author', ['role', 'name', 'email'])
+            .populate('company', ['companyName', 'companyEmail', 'contactNumber'])
             .exec(async (err, jobposts) => {
                 if(err) return res.send(err)
                 await JobPost.countDocuments(query).exec((count_err, count) => {
@@ -40,20 +42,22 @@ module.exports = {
             let jobPost
             await JobStatus.find({}).exec(async (err, status)=>{
                 if(err) return res.status(500).send(err)
-                jobPost = await new JobPost({
-                    author: res.user.id,
-                    jobTitle: req.body.jobTitle,
-                    jobDescription: req.body.jobDescription,
-                    expectedSalary: req.body.expectedSalary,
-                    numberOfApplicantNeeded: req.body.numberOfApplicantNeeded,
-                    status: status[1]._id
-                })
-                await jobPost.save((err, newJobPost) => {
-                    if(err){
-                        res.status(500).json({ response: false, message: err.message})
-                    }else{
-                        res.status(201).json({response: true, jobPost: newJobPost })
-                    }
+                await Company.findOne({"companyUsers": {"$in": res.user.id}}).exec(async (err,user)=>{
+                    if(err) return res.status(500).json({ response: false, message: err.message})
+                    console.log(user)
+                    jobPost = await new JobPost({
+                        company:user._id,
+                        author: res.user.id,
+                        jobTitle: req.body.jobTitle,
+                        jobDescription: req.body.jobDescription,
+                        expectedSalary: req.body.expectedSalary,
+                        numberOfApplicantNeeded: req.body.numberOfApplicantNeeded,
+                        status: status[1]._id
+                    })
+                    await jobPost.save((err, newJobPost) => {
+                        if(err) return res.status(500).json({ response: false, message: err.message})
+                        return res.status(201).json({response: true, jobPost: newJobPost })
+                    })
                 })
             })
         } catch (error) {
