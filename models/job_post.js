@@ -7,7 +7,7 @@ const jobPostSchema = Schema({
     company: { type: Schema.Types.ObjectId, ref: 'Company' },
     applicants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     hiredApplicants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    status: { type: Schema.Types.ObjectId, ref: 'Status' },
+    status: { type: Schema.Types.ObjectId, ref: 'Job_Status' },
     numberOfApplicantNeeded: { type: Number, required: true },
     jobTitle: {
         type: String,
@@ -40,4 +40,4 @@ const jobPostSchema = Schema({
     }
 })
 
-module.exports = mongoose.model('JobPost', jobPostSchema)
+module.exports = mongoose.model('Job_Post', jobPostSchema)

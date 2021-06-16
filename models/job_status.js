@@ -6,4 +6,4 @@ const statusSchema = Schema({
     name: { type: String, required: true },
 })
 
-module.exports = mongoose.model('Status', statusSchema)
+module.exports = mongoose.model('Job_Status', statusSchema)

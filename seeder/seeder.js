@@ -82,9 +82,10 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true }, async fun
                         // load models
                         await seeder.loadModels([
                             './models/user',
-                            './models/status',
+                            './models/job_status',
                             './models/applicant',
-                            './models/company'
+                            './models/company',
+                            './models/job_post'
                         ])
                         
                         // reset counter
@@ -94,9 +95,10 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true }, async fun
                         // clear models
                         await seeder.clearModels([
                             'User',
-                            'Status',
+                            'Job_Status',
                             'Applicant',
-                            'Company'
+                            'Company',
+                            'Job_Post'
                         ],function(){})
                         
                         // populate models
@@ -148,7 +150,7 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true }, async fun
 
 var data = [
     {
-        'model': 'Status',
+        'model': 'Job_Status',
         'documents': [
             {
                 statusId: 0,
