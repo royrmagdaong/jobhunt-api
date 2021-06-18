@@ -44,7 +44,6 @@ module.exports = {
                 if(err) return res.status(500).send(err)
                 await Company.findOne({"companyUsers": {"$in": res.user.id}}).exec(async (err,user)=>{
                     if(err) return res.status(500).json({ response: false, message: err.message})
-                    console.log(user)
                     jobPost = await new JobPost({
                         company:user._id,
                         author: res.user.id,
@@ -66,8 +65,9 @@ module.exports = {
     },
     apply: async (req, res) => {
         try {
-            await JobPost.findOne({_id: '60ca23831123651c280e34c9'}).exec((err, jobpost)=>{
+            await JobPost.findOne({_id: req.body.jobPostId }).exec((err, jobpost)=>{
                 if(err) return res.send(err)
+                console.log(req.body.jobPostId)
                 jobpost.applicants.push(res.user.id)
                 jobpost.save(err=>{
                     if(err) return res.send(err)
