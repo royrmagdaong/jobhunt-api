@@ -65,14 +65,22 @@ module.exports = {
     },
     apply: async (req, res) => {
         try {
-            await JobPost.findOne({_id: req.body.jobPostId }).exec((err, jobpost)=>{
+            await JobPost.findOne({_id: req.body.jobPostId }).exec( async (err, jobpost)=>{
                 if(err) return res.send(err)
-                console.log(req.body.jobPostId)
-                jobpost.applicants.push(res.user.id)
-                jobpost.save(err=>{
-                    if(err) return res.send(err)
-                    return res.send({jobpost})
-                }) 
+                if(jobpost){
+                    await JobPost.findOne({_id: req.body.jobPostId, "applicants": {"$in": res.user.id }}).exec( async (err, job)=>{
+                        if(err) return res.send(err)
+                        if(job){
+                            return res.send({response: false, message: "You already applied to this job."})
+                        }else{
+                            jobpost.applicants.push(res.user.id)
+                            await jobpost.save(err=>{
+                                if(err) return res.send(err)
+                                return res.send({response: true, message: "Your applicant has been sent to this job."})
+                            })
+                        }
+                    })
+                }
             })
         } catch (error) {
             return res.status(500).json({ message: error.message })
