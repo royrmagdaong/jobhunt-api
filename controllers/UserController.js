@@ -12,7 +12,7 @@ module.exports = {
             const users = await User.find().where('deleted_at').equals(null)
             res.json(users)
         } catch (error) {
-            res.status(500).json({ message: error.message })
+            res.status(500).json({ response: false, message: error.message })
         }
     },
     getAllCompanyUser: async (req, res) => {
